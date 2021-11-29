@@ -10,18 +10,21 @@ class DetailView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<LogicBloc, LogicState>(
       builder: (context, state) {
-        print(state.repository.selectedItem!.preview.hasSeries);
-        if(state.repository.selectedItem!.details.mediaItems.length > 0 ){
-          state.repository.selectedItem!.details.mediaItems.first.playbackMethods.first.params.forEach((element) {print(element.key);});
-        } else {
-          print("no itmes=(");
+        if(state.repository.selectedItem == null){
+          return const Center(child: CircularProgressIndicator(),);
         }
+
+        if(state.repository.selectedItem!.details.mediaItems.isNotEmpty ){
+          state.repository.selectedItem!.details.mediaItems.first.playbackMethods.first.params.forEach((element) {print(element.key);});
+        }
+
         if (state.state == LogicDataState.isLoad ||
             state.repository.selectedItem == null) {
           return const Center(
             child: CircularProgressIndicator(),
           );
         }
+        
         return Stack(
           children: [
             Image.network(
