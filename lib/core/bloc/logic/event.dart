@@ -27,3 +27,16 @@ class GetChannelPlayback extends LogicEvent {
 
   GetChannelPlayback(this.channel);
 }
+
+class GetAllTitlesInSource extends LogicEvent{
+  final String source;
+  final String categoryId;
+
+  GetAllTitlesInSource(this.source, this.categoryId);
+}
+
+class GetAllCatigoriesInSource extends LogicEvent{
+  final String source;
+
+  GetAllCatigoriesInSource(this.source);
+}

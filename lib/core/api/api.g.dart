@@ -82,7 +82,7 @@ class _ApiClient implements ApiClient {
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<CategoriesDataModel>(
             Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(_dio.options, 'vod/v2/${source}/categories',
+                .compose(_dio.options, '/vod/v2/${source}/categories',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = CategoriesDataModel.fromJson(_result.data!);
@@ -90,13 +90,17 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<TitlesDataModel> getAllTitleInCategory(
-      source, categoryId, session) async {
+  Future<TitlesDataModel> getAllTitleInSource(source, session,
+      {categoryId, limit = 20, offset = 0, sort = "popular"}) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
+      r'session': session,
       r'categoryId': categoryId,
-      r'session': session
+      r'limit': limit,
+      r'offset': offset,
+      r'sort': sort
     };
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     final _result = await _dio.fetch<Map<String, dynamic>>(

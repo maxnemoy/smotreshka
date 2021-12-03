@@ -19,6 +19,8 @@ class LogicBloc extends Bloc<LogicEvent, LogicState> {
     on<GetVideoDetailEvent>(_onGetVideoDetailEvent);
     on<GetChannelEvent>(_onGetChannelEvent);
     on<GetChannelPlayback>(onGetChannelPlayback);
+    on<GetAllTitlesInSource>(onGetItemsInSource);
+    on<GetAllCatigoriesInSource>(onGetAllCatigoriesInSource);
   }
 
   @override
@@ -41,6 +43,15 @@ class LogicBloc extends Bloc<LogicEvent, LogicState> {
 
   void onGetChannelPlayback(GetChannelPlayback event, Emitter<LogicState> emiter) async {
     await _cinemaRepository.getSelectedChannel(event.channel);
+  }
+
+  void onGetItemsInSource(GetAllTitlesInSource event, Emitter<LogicState> emiter) async {
+    await _cinemaRepository.getAllItemsInSource(event.source, event.categoryId);
+  }
+
+
+  void onGetAllCatigoriesInSource(GetAllCatigoriesInSource event, Emitter<LogicState> emiter) async {
+    await _cinemaRepository.getAllCategoriesInSource(event.source);
   }
 
   void _onChangeStatus(ChangeStatusEvent event, Emitter<LogicState> emiter){

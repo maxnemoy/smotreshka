@@ -62,21 +62,25 @@ abstract class ApiClient {
   /// [source] string source name
   /// [session] string session ID
   /// return [CategoriesDataModel]
-  @GET("vod/v2/{source}/categories")
+  @GET("/vod/v2/{source}/categories")
   Future<CategoriesDataModel> getAllCategoriesInSource(
     @Path("source") String source,
     @Query("session") String session);
 
   /// Get all title in category
   /// [source] string source name
-  /// [categoryId] string category ID
   /// [session] string session ID
+  /// [categoryId] string category ID
   /// return [TitlesDataModel]
   @GET("/vod/v2/{source}/titles")
-  Future<TitlesDataModel> getAllTitleInCategory(
+  Future<TitlesDataModel> getAllTitleInSource(
     @Path("source") String source,
-    @Query("categoryId") String categoryId,
-    @Query("session") String session
+    @Query("session") String session,
+    {@Query("categoryId") String? categoryId,
+    @Query("limit") int limit = 20,
+    @Query("offset") int offset = 0,
+    @Query("sort") String sort = "popular",
+     }
   );
 
   /// Get serial episodes

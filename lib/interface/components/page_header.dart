@@ -9,52 +9,54 @@ class PageHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5),
-      child: Row(children: [
-        SizedBox(
-          width: 300,
-          child: TextField(
-            //controller: _search,
-            decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.search),
-                label: Text("Поиск..."),
-                border: InputBorder.none),
-            onSubmitted: (v) => context.read<RouteBloc>().add(SelectPageEvent(Pages.search)),
+    return SizedBox(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Row(children: [
+          SizedBox(
+            width: 300,
+            child: TextField(
+              //controller: _search,
+              decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.search),
+                  label: Text("Поиск..."),
+                  border: InputBorder.none),
+              onSubmitted: (v) => context.read<RouteBloc>().add(SelectPageEvent(Pages.search)),
+            ),
           ),
-        ),
-        const Spacer(),
-        IconButton(
-            onPressed: () {
-              context.read<ThemeBloc>().toggleTheme();
+          const Spacer(),
+          IconButton(
+              onPressed: () {
+                context.read<ThemeBloc>().toggleTheme();
+              },
+              icon: Icon(Theme.of(context).brightness == Brightness.dark
+                  ? Icons.wb_sunny_outlined
+                  : Icons.wb_cloudy_outlined)),
+          PopupMenuButton(
+            onSelected: (v) {
+              switch (v) {
+                case "profile":
+                  context.read<RouteBloc>().add(SelectPageEvent(Pages.profile));
+                  break;
+                case "exit":
+                  context.read<AuthBloc>().add(LogoutEvent());
+                  break;
+                default:
+              }
             },
-            icon: Icon(Theme.of(context).brightness == Brightness.dark
-                ? Icons.wb_sunny_outlined
-                : Icons.wb_cloudy_outlined)),
-        PopupMenuButton(
-          onSelected: (v) {
-            switch (v) {
-              case "profile":
-                context.read<RouteBloc>().add(SelectPageEvent(Pages.profile));
-                break;
-              case "exit":
-                context.read<AuthBloc>().add(LogoutEvent());
-                break;
-              default:
-            }
-          },
-          itemBuilder: (context) => [
-            const PopupMenuItem(
-              child: Text("Профиль"),
-              value: "profile",
-            ),
-            const PopupMenuItem(
-              child: Text("Выход"),
-              value: "exit",
-            ),
-          ],
-        ),
-      ]),
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                child: Text("Профиль"),
+                value: "profile",
+              ),
+              const PopupMenuItem(
+                child: Text("Выход"),
+                value: "exit",
+              ),
+            ],
+          ),
+        ]),
+      ),
     );
   }
 }

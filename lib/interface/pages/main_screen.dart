@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:smotreshka/components/icons_wrapper/icons_data.dart';
 import 'package:smotreshka/core/bloc/logic/bloc.dart';
@@ -23,7 +24,7 @@ class MainScreen extends StatelessWidget {
   Widget getPage(BuildContext context, RouteState state) {
     if (state.page == Pages.main){
        context.read<LogicBloc>().add(GetHomeCollectionEvent());
-       return const HomeViewer();
+       return HomeViewer(source: state.source,);
     }
     if (state.page == Pages.search) return const SearchViewer();
     if (state.page == Pages.profile) return const SettingsViewer();
@@ -35,7 +36,8 @@ class MainScreen extends StatelessWidget {
       context.read<LogicBloc>().add(GetVideoDetailEvent(state.title, state.source));
       return const DetailView();
     }
-    return CinemaViewer(page: state.page);
+    context.read<LogicBloc>().add(GetAllCatigoriesInSource(state.page.toString().split('.')[1].toLowerCase()));
+    return CinemaViewer(key: ValueKey(state.page), source: state.page.toString().split('.')[1].toLowerCase(),);
   }
 
   int getIndex(Pages page) {
@@ -55,7 +57,7 @@ class MainScreen extends StatelessWidget {
                         constraints: BoxConstraints(minHeight: constraint.maxHeight),
                         child: IntrinsicHeight(
                             child: NavigationRail(
-                                extended: constraint.maxWidth > extendedMaxSize,
+                                extended: MediaQuery.of(context).size.width > extendedMaxSize,
                                 onDestinationSelected: (i) {
                                   context.read<RouteBloc>().add(SelectPageEvent(Pages.values[i]));
                                 },
@@ -78,10 +80,7 @@ class MainScreen extends StatelessWidget {
                                 ),
                                 destinations: const [
                                   NavigationRailDestination(
-                                    icon: Padding(
-                                      padding: EdgeInsets.only(right: 0),
-                                      child: Icon(Icons.home),
-                                    ),
+                                    icon: Icon(Icons.home),
                                     label: Text("Главная"),
                                   ),
                                   NavigationRailDestination(
@@ -89,12 +88,9 @@ class MainScreen extends StatelessWidget {
                                     label: Text("Телевидение"),
                                   ),
                                   NavigationRailDestination(
-                                    icon: Padding(
-                                      padding: EdgeInsets.only(right: 15),
-                                      child: Icon(
-                                        BrandIcons.start,
-                                        size: 16,
-                                      ),
+                                    icon: Icon(
+                                      BrandIcons.start,
+                                      size: 16,
                                     ),
                                     label: Text("Старт"),
                                   ),
@@ -103,11 +99,8 @@ class MainScreen extends StatelessWidget {
                                     label: Text("Амедиатека"),
                                   ),
                                   NavigationRailDestination(
-                                    icon: Padding(
-                                      padding: EdgeInsets.only(right: 10),
-                                      child: Icon(
-                                        BrandIcons.megago,
-                                      ),
+                                    icon: Icon(
+                                      BrandIcons.megago,
                                     ),
                                     label: Text("Мегого"),
                                   ),
@@ -121,17 +114,11 @@ class MainScreen extends StatelessWidget {
                                     ),
                                   ),
                                   NavigationRailDestination(
-                                    icon: Padding(
-                                      padding: EdgeInsets.only(right: 15),
-                                      child: Icon(BrandIcons.primer),
-                                    ),
+                                    icon: Icon(BrandIcons.primer),
                                     label: Text("Премьер"),
                                   ),
                                   NavigationRailDestination(
-                                    icon: Padding(
-                                      padding: EdgeInsets.only(right: 20),
-                                      child: Icon(BrandIcons.ivi),
-                                    ),
+                                    icon: Icon(BrandIcons.ivi),
                                     label: Text("Иви"),
                                   ),
                                 ],
@@ -140,10 +127,24 @@ class MainScreen extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: Column(
+                    child: Stack(
                       children: [
-                        const PageHeader(),
-                        getPage(context, state),
+                         PageTransitionSwitcher(
+                            transitionBuilder: (
+                              Widget child,
+                              Animation<double> animation,
+                              Animation<double> secondaryAnimation,
+                            ) {
+                              return FadeThroughTransition(
+                                animation: animation,
+                                secondaryAnimation: secondaryAnimation,
+                                child: child,
+                              );
+                            },
+                            child: getPage(context, state),
+                          ),
+                        const Align(alignment: Alignment.topCenter, child: PageHeader()),
+                        
                       ],
                     ),
                   )
